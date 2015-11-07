@@ -1,0 +1,5 @@
+/home/victor/Documents/Commando/Commando/Commando/obj/x86/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
+/home/victor/Documents/Commando/Commando/Commando/bin/Debug/Commando.exe.mdb
+/home/victor/Documents/Commando/Commando/Commando/bin/Debug/Commando.exe
+/home/victor/Documents/Commando/Commando/Commando/obj/x86/Debug/Commando.exe
+/home/victor/Documents/Commando/Commando/Commando/obj/x86/Debug/Commando.exe.mdb
