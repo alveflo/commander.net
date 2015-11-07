@@ -57,7 +57,7 @@ namespace Commando
 
 		private void Validate()
 		{
-			IEnumerable<ArgumentSpecification> mandatoriesMissing = argumentSpecifications.Where (i => !parsedArguments.Keys.Contains (i.Long));
+			IEnumerable<ArgumentSpecification> mandatoriesMissing = argumentSpecifications.Where (i => !parsedArguments.Keys.Contains (i.Long) && i.Mandatory);
 			if (mandatoriesMissing.Count() > 0) {
 				StringBuilder strb = new StringBuilder ("Missing mandatory arguments:\n");
 				foreach (ArgumentSpecification arg in mandatoriesMissing)

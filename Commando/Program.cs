@@ -8,14 +8,20 @@ namespace Commando
 		{
 			dynamic program = new Commando()
 				.Version("0.0.1")
-				.Parameter ("p", "path", "Path to location", true)
-				.Switch ("v", "version", "Version of program", true)
-				.Switch ("h", "help", "Get help", false)
-				.Parse ("-p path/ -h -v");
+				.Parameter ("p", "pizza", "Some pizza", true)
+				.Parameter ("d", "drink", "Some drink", true)
+				.Switch ("v", "vegetables", "Want vegetables?", false)
+				.Parse ("-p Capricciosa -d Coke -v");
 
-			Console.WriteLine (program.path);
-			Console.WriteLine (program.version);
-			Console.WriteLine (program.help);
+			if (program.pizza != "Margherita")
+				Console.WriteLine("We only serve margheritas!");
+			if (program.vegetables)
+				Console.WriteLine("We're out of vegetables!");
+
+			Console.WriteLine (String.Format ("You've ordered a {0} with {1}", 
+				program.pizza, 
+				program.drink));
+
 		}
 	}
 }

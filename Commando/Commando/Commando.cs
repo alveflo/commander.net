@@ -23,8 +23,8 @@ namespace Commando
 		public Commando Version(string version)
 		{
 			argumentSpecifications.Add (new ArgumentSpecification {
-				Short = "v",
-				Long = "version",
+				Short = "V",
+				Long = "Version",
 				DataType = null,
 				IsSwitch = true,
 				IsParameter = false,
