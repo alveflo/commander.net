@@ -33,6 +33,9 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="nunit.framework, Version=2.6.3.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
+      <Package>nunit</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -40,9 +43,11 @@
     <Compile Include="Commando\Commando.cs" />
     <Compile Include="Commando\Parser.cs" />
     <Compile Include="Commando\ArgumentSpecification.cs" />
+    <Compile Include="Tests\CommandoTestFixture.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Commando\" />
+    <Folder Include="Tests\" />
   </ItemGroup>
 </Project>

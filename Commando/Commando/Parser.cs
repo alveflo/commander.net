@@ -27,14 +27,14 @@ namespace Commando
 			while (argQueue.Count > 0) {
 				string arg = argQueue.Dequeue ();
 				if (arg.StartsWith ("-")) {
-					string pArg = arg.Replace ("-", "");
+					string pArg = arg.TrimStart ('-');
 					ArgumentSpecification spec;
 					if (IsSpecifiedArgument (pArg, out spec)) {
 						if (spec.IsParameter) {
 							if (argQueue.Peek ().StartsWith ("-")) {
 								throw new ArgumentException ("Expected value, got parameter instead: " + arg + " " + argQueue.Peek ());
 							} else {
-								parsedArguments.Add (spec.Long, argQueue.Dequeue ());
+								parsedArguments.Add (ReplaceDashes(spec.Long), argQueue.Dequeue ());
 							}
 						} else {
 							if (spec.Long == "version") {
@@ -44,7 +44,7 @@ namespace Commando
 								WriteHelp ();
 								Environment.Exit (0);
 							}
-							parsedArguments.Add (spec.Long, true);
+							parsedArguments.Add (ReplaceDashes(spec.Long), true);
 						}
 					} else {
 						throw new ArgumentException ("Unrecognized argument " + arg);
@@ -52,14 +52,25 @@ namespace Commando
 				}
 			}
 
-			parsedArguments = AddMissingNonMandatorySwitches (parsedArguments);
+			parsedArguments = AddMissingNonMandatoryArguments (parsedArguments);
 			Validate ();
 			return parsedArguments;
 		}
 
-		private Dictionary<string, object> AddMissingNonMandatorySwitches(Dictionary<string, object> parsedArguments)
+		private string ReplaceDashes(string str) {
+			while (str.Contains("-")) {
+				int dashIndex = str.IndexOf ("-");
+				if (dashIndex < str.Length - 1)
+					str = str.Replace (str [dashIndex].ToString(), str [++dashIndex].ToString ().ToUpper ());
+				str = str.Remove (dashIndex, 1);
+			}
+			return str;
+		}
+
+
+		private Dictionary<string, object> AddMissingNonMandatoryArguments(Dictionary<string, object> parsedArguments)
 		{
-			IEnumerable<ArgumentSpecification> mandatoriesMissing = argumentSpecifications.Where (i => !parsedArguments.Keys.Contains (i.Long) && !i.Mandatory && i.IsSwitch);
+			IEnumerable<ArgumentSpecification> mandatoriesMissing = argumentSpecifications.Where (i => !parsedArguments.Keys.Contains (i.Long) && !i.Mandatory);
 			foreach (ArgumentSpecification spec in mandatoriesMissing)
 				parsedArguments.Add (spec.Long, false);
 			return parsedArguments;
@@ -67,7 +78,7 @@ namespace Commando
 
 		private void Validate()
 		{
-			IEnumerable<ArgumentSpecification> mandatoriesMissing = argumentSpecifications.Where (i => !parsedArguments.Keys.Contains (i.Long) && i.Mandatory);
+			IEnumerable<ArgumentSpecification> mandatoriesMissing = argumentSpecifications.Where (i => !parsedArguments.Keys.Contains (ReplaceDashes(i.Long)) && i.Mandatory);
 			if (mandatoriesMissing.Count() > 0) {
 				StringBuilder strb = new StringBuilder ("Missing mandatory arguments:\n");
 				foreach (ArgumentSpecification arg in mandatoriesMissing)
