@@ -1,7 +1,7 @@
 # Commando
 Command line parsing inspired by [Commander.js](https://github.com/tj/commander.js)
 
-### Usage
+### Example usage
 ```csharp
 public static void Main (string[] args)
 {
@@ -10,7 +10,7 @@ public static void Main (string[] args)
     .Parameter ("p", "pizza", "Some pizza", true)
     .Parameter ("d", "drink", "Some drink", true)
     .Switch ("v", "vegetables", "Want vegetables?", false)
-    .Parse ("-p Capricciosa -d Coke -v");
+    .Parse (args);
 
   if (program.pizza != "Margherita")
     Console.WriteLine("We only serve margheritas!");
@@ -22,11 +22,28 @@ public static void Main (string[] args)
     program.drink));
 }
 ```
-Will output
+Result
 ```
+$ program -p Capricciosa -d Coke -v
 We only serve margheritas!
 We're out of vegetables!
 You've ordered a Capricciosa with Coke
+```
+
+#### Generated help
+Passing `-h` or `--help` to the example above will output
+```
+$ program --help
+
+	Usage: <program> [options]
+
+	Options:
+	-h, --help        Get help          
+	-V, --Version     Get version       
+	-p, --pizza       Some pizza        (Mandatory)
+	-d, --drink       Some drink        (Mandatory)
+	-v, --vegetables  Want vegetables?  
+
 ```
 
 ### License
