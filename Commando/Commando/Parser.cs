@@ -7,22 +7,21 @@ namespace Commando
 {
 	internal class Parser
 	{
-		private string arguments;
+		private string[] arguments;
 		private List<ArgumentSpecification> argumentSpecifications;
-		private Dictionary<string, dynamic> parsedArguments;
+		private Dictionary<string, object> parsedArguments;
 		private Queue<string> argQueue;
 
-		public Parser (string arguments, List<ArgumentSpecification> argumentSpecifications)
+		public Parser (string[] arguments, List<ArgumentSpecification> argumentSpecifications)
 		{
-			parsedArguments = new Dictionary<string, dynamic> ();
+			parsedArguments = new Dictionary<string, object> ();
 			argQueue = new Queue<string> ();
 			this.argumentSpecifications = argumentSpecifications;
 			this.arguments = arguments;
 		}
 
-		public Dictionary<string, dynamic> Parse() {
-			string[] splittedArguments = arguments.Split (" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-			foreach (string arg in splittedArguments)
+		public Dictionary<string, object> Parse() {
+			foreach (string arg in arguments)
 				argQueue.Enqueue (arg);
 
 			while (argQueue.Count > 0) {
@@ -33,13 +32,16 @@ namespace Commando
 					if (IsSpecifiedArgument (pArg, out spec)) {
 						if (spec.IsParameter) {
 							if (argQueue.Peek ().StartsWith ("-")) {
-								throw new ArgumentException ("Expected value, got argument instead: " + arg + " " + argQueue.Peek ());
+								throw new ArgumentException ("Expected value, got parameter instead: " + arg + " " + argQueue.Peek ());
 							} else {
 								parsedArguments.Add (spec.Long, argQueue.Dequeue ());
 							}
 						} else {
 							if (spec.Long == "version") {
 								Console.WriteLine (spec.Value);
+								Environment.Exit (0);
+							} else if (spec.Long == "help") {
+								WriteHelp ();
 								Environment.Exit (0);
 							}
 							parsedArguments.Add (spec.Long, true);
@@ -50,8 +52,16 @@ namespace Commando
 				}
 			}
 
-
+			parsedArguments = AddMissingNonMandatorySwitches (parsedArguments);
 			Validate ();
+			return parsedArguments;
+		}
+
+		private Dictionary<string, object> AddMissingNonMandatorySwitches(Dictionary<string, object> parsedArguments)
+		{
+			IEnumerable<ArgumentSpecification> mandatoriesMissing = argumentSpecifications.Where (i => !parsedArguments.Keys.Contains (i.Long) && !i.Mandatory && i.IsSwitch);
+			foreach (ArgumentSpecification spec in mandatoriesMissing)
+				parsedArguments.Add (spec.Long, false);
 			return parsedArguments;
 		}
 
@@ -71,6 +81,20 @@ namespace Commando
 			return !spec.Equals(default(ArgumentSpecification));
 		}
 
+		private void WriteHelp () {
+			Console.WriteLine ("\n\n\tUsage: <program> [options]\n\n\tOptions:");
+			int longestArgName = argumentSpecifications.Select (i => i.Long.Length).Max ();
+			int longestDescription = argumentSpecifications.Select (i => i.Description).Max ().Length;
+
+			foreach (ArgumentSpecification spec in argumentSpecifications) {
+				string argNameWhiteSpaces = new string (' ', 2 + longestArgName - spec.Long.Length);
+				string descWhiteSpaces = new string (' ', 2 + longestDescription - spec.Description.Length);
+				string str = $"\t-{spec.Short}, --{spec.Long}{argNameWhiteSpaces}{spec.Description}{descWhiteSpaces}";
+				if (spec.Mandatory)
+					str += "(Mandatory)";
+				Console.WriteLine(str);
+			}
+		}
 	}
 }
 

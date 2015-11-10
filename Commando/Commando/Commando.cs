@@ -11,13 +11,17 @@ namespace Commando
 		public Commando ()
 		{
 			argumentSpecifications = new List<ArgumentSpecification> ();
-		}
+			argumentSpecifications.Add (new ArgumentSpecification {
+				Short = "h",
+				Long = "help",
+				Description = "Get help",
+				DataType = null,
+				IsSwitch = true,
+				IsParameter = false,
+				Mandatory = false,
+				Value = null
+			});
 
-		public void Help()
-		{
-			Console.WriteLine ("\tUsage: <program> [options]\n\n\tOptions:");
-			foreach (ArgumentSpecification spec in argumentSpecifications)
-				Console.WriteLine (String.Format ("\t-{0}, --{1}\t{2}\t{3}", spec.Short, spec.Long, spec.Description, spec.Mandatory));
 		}
 
 		public Commando Version(string version)
@@ -25,6 +29,7 @@ namespace Commando
 			argumentSpecifications.Add (new ArgumentSpecification {
 				Short = "V",
 				Long = "Version",
+				Description = "Get version",
 				DataType = null,
 				IsSwitch = true,
 				IsParameter = false,
@@ -81,10 +86,10 @@ namespace Commando
 		}
 
 
-		public ExpandoObject Parse(string x) {
+		public ExpandoObject Parse(string[] args) {
 			var res = new ExpandoObject () as IDictionary<string, Object>;
 			try {
-				Dictionary<string, dynamic> parsedResult = new Parser (x, argumentSpecifications).Parse ();
+				Dictionary<string, dynamic> parsedResult = new Parser (args, argumentSpecifications).Parse ();
 				foreach (KeyValuePair<string, dynamic> keyValue in parsedResult)
 					res.Add(keyValue.Key, keyValue.Value);
 			} catch (ArgumentException ex) {
