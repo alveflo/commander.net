@@ -11,7 +11,7 @@ namespace Commando
 				.Parameter("p", "pizza", "Some pizza", true)
 				.Parameter("d", "drink", "Some drink", true)
 				.Switch("v", "vegetables", "Want vegetables?", false)
-				.Parse(new string[] { "--help" });
+				.Parse(new string[] { "-p", "Margherita", "-d", "coke" });
 
 			if (program.pizza != "Margherita")
 				Console.WriteLine("We only serve margheritas!");

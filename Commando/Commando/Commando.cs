@@ -86,8 +86,8 @@ namespace Commando
 		}
 
 
-		public ExpandoObject Parse(string[] args) {
-			var res = new ExpandoObject () as IDictionary<string, Object>;
+		public DynamicGracefulDictionary Parse(string[] args) {
+			GracefulDictionary res = new GracefulDictionary ();
 			try {
 				Dictionary<string, dynamic> parsedResult = new Parser (args, argumentSpecifications).Parse ();
 				foreach (KeyValuePair<string, dynamic> keyValue in parsedResult)
@@ -95,7 +95,7 @@ namespace Commando
 			} catch (ArgumentException ex) {
 				throw ex;
 			}
-			return res as ExpandoObject;
+			return new DynamicGracefulDictionary(res);
 		}
 	}
 }

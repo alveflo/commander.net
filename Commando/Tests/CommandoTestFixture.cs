@@ -42,7 +42,18 @@ namespace Commando
 			Assert.AreEqual (program.drink, "Coke");
 			Assert.AreEqual (program.takeAway, true);
 			Assert.AreEqual (program.vegetables, false);
+		}
 
+		[Test]
+		public void TestNullValues () {
+			dynamic program = new Commando ()
+				.Parameter ("p", "pizza", "Test case", true)
+				.Parameter ("d", "drink", "Test case", true)
+				.Switch ("t", "take-away", "Test case", true)
+				.Switch ("v", "vegetables", "Test case", false)
+				.Parse ("-p Vesuvio --drink Coke --take-away".Split(' '));
+
+			Assert.AreEqual (program.foo, null);
 		}
 	}
 }

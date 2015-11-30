@@ -44,10 +44,15 @@
     <Compile Include="Commando\Parser.cs" />
     <Compile Include="Commando\ArgumentSpecification.cs" />
     <Compile Include="Tests\CommandoTestFixture.cs" />
+    <Compile Include="Commando\GracefulDictionary.cs" />
+    <Compile Include="Commando\DynamicGracefulDictionary.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Commando\" />
     <Folder Include="Tests\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Commando\graceful-license.txt" />
   </ItemGroup>
 </Project>
